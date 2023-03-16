@@ -4,6 +4,7 @@ import com.spring.jwt.model.User;
 import com.spring.jwt.repos.UserRepository;
 import com.spring.jwt.requests.CreateUserRequest;
 import com.spring.jwt.response.AuthResponse;
+import com.spring.jwt.response.BasicResponse;
 import com.spring.jwt.service.CustomDetailsService;
 import com.spring.jwt.service.TokenService;
 import com.spring.jwt.service.UserService;
@@ -42,7 +43,7 @@ public class AuthController {
     public @ResponseBody ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest request){
         User user = userService.create(request);
 
-        return new ResponseEntity<>("done nicely", HttpStatus.OK);
+        return new ResponseEntity<>(new BasicResponse("User Created Successfully", "000", user), HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -52,6 +53,8 @@ public class AuthController {
         LOG.debug("Token granted: {}", token);
 
         String name = authentication.getName();
+
+        System.out.println(authentication.getDetails());
 
         Optional<User> user = userRepository.findByName(name);
 
