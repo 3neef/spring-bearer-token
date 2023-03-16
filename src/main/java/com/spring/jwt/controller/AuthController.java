@@ -1,19 +1,29 @@
 package com.spring.jwt.controller;
 
+import com.spring.jwt.model.User;
+import com.spring.jwt.requests.CreateUserRequest;
 import com.spring.jwt.response.AuthResponse;
+import com.spring.jwt.service.CustomDetailsService;
 import com.spring.jwt.service.TokenService;
+import com.spring.jwt.service.UserService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/user")
 public class AuthController {
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CustomDetailsService customDetailsService;
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     private final TokenService tokenService;
@@ -22,7 +32,14 @@ public class AuthController {
         this.tokenService = tokenService;
     }
 
-    @PostMapping("/auth")
+    @PostMapping("/register")
+    public @ResponseBody ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest request){
+        User user = userService.create(request);
+
+        return new ResponseEntity<>("done nicely", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
     public @ResponseBody ResponseEntity<?> token(Authentication authentication) {
         LOG.debug("Token requested for user: '{}'", authentication.getName());
         String token = tokenService.generateToken(authentication);
