@@ -39,22 +39,14 @@ public class SecurityConfig {
     public SecurityConfig(RsaKeyProperties rsaKeys) {
         this.rsaKeys = rsaKeys;
     }
-//    @Bean
-//    public InMemoryUserDetailsManager user(){
-//        return new InMemoryUserDetailsManager(
-//                User.withUsername("mazin")
-//                        .password("pass4user")
-//                        .authorities("read")
-//                        .build()
-//        );
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth ->
-                        auth.anyRequest()
+                        auth.requestMatchers("/api/user/register").permitAll()
+                        .anyRequest()
                                 .authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

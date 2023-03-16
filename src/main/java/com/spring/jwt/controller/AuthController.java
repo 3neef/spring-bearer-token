@@ -1,6 +1,7 @@
 package com.spring.jwt.controller;
 
 import com.spring.jwt.model.User;
+import com.spring.jwt.repos.UserRepository;
 import com.spring.jwt.requests.CreateUserRequest;
 import com.spring.jwt.response.AuthResponse;
 import com.spring.jwt.service.CustomDetailsService;
@@ -15,12 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/user")
 public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CustomDetailsService customDetailsService;
@@ -47,7 +53,9 @@ public class AuthController {
 
         String name = authentication.getName();
 
-        return new ResponseEntity<>(new AuthResponse("User Logged in successfully", "000", name, token), HttpStatus.OK);
+        Optional<User> user = userRepository.findByName(name);
+
+        return new ResponseEntity<>(new AuthResponse("User Logged in successfully", "000", user, token), HttpStatus.OK);
     }
 
 }
