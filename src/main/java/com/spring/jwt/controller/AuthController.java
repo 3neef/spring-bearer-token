@@ -54,7 +54,7 @@ public class AuthController {
 
         String name = authentication.getName();
 
-        System.out.println(authentication.getDetails());
+//        System.out.println(authentication.getDetails());
 
         Optional<User> user = userRepository.findByName(name);
 
